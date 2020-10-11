@@ -10,7 +10,6 @@ export const bus = new Vue();
 new Vue({
 	router,
 	store,
-	bus,
 	render: h => h(App)
 }).$mount('#app');
 
