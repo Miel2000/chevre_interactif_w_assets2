@@ -1,128 +1,172 @@
+<!-- Principe : -->
+<!-- Ce component fait beaucoup de choses : -->
+<!-- _ il surveille le currentTime de la video pour déclencher des vérifications selon celui-ci -->
+<!-- __ quand il doit déclencher des choses, c'est souvent : -->
+<!-- ___ mettre à jour le $store.state (les "actualChoices actualCallToActions" etc..) -->
+<!-- ___ parfois des .play() ou des .pause() ou des $store.$emit() selon les spécificités des différents éléments d'intéractions -->
+
+<!-- ° ° ° ° ° ° ° ° ° T E M P L A T E ° ° ° ° ° ° ° ° ° -->
+<!-- ° ° ° ° ° ° ° ° ° T E M P L A T E ° ° ° ° ° ° ° ° ° -->
+
 <template>
 
-    <div v-if="audioInfos" class="audio-container">
-         
-            <audio 
-          
-                autoplay
-                controls="controls"
-                @timeupdate="onTimeUpdate"
-                ref="audioBox"
-                :isContinuePlaying=audioInfos.isContinue
-            >
-                <source :src="'/assets/mp3/' + audioInfos.url"/>
-            
-            </audio>
-    </div>
-  
+	<div>
+
+		<audio 
+			class="audio-player"
+			:class="{ 
+				cohabitationCta: this.$store.state.actualCallToActions.length !== 0,
+				isInteractive: this.$store.state.playerIsInteractive
+			}"
+			:src="'/assets/mp3/' + audioInfos.self.url"
+			controls 
+			@timeupdate="onTimeUpdate" 
+		>
+		</audio>
+
+		<button
+			@click="testHandler"
+		>
+			heyhey
+		</button>
+
+	</div>
+
 
 </template>
+
+<!-- ° ° ° ° ° ° ° ° ° L O G I C ° ° ° ° ° ° ° ° ° -->
+<!-- ° ° ° ° ° ° ° ° ° L O G I C ° ° ° ° ° ° ° ° ° -->
+
 <script>
+	import { bus } from '@/main'
 
-export default {
+	export default {
 
-    name: "ComponentAudio",
-    
-    components: { 
-        
-    },
 
-    props: {
-        audioInfos: {
-            type: Object,
-            required: true
-        },
-     
-    },
+		props: {
+			audioInfos: {
+				type: Object,
+				required: true
+			}
+		},
 
-    data() {
-		return {
-   
+		data() {
+			return {};
+		},
+
+		mounted() {
+
+			this.isPaused = false;
+
+			this.alreadySent = [];
+
+			bus.$on("say-pong", () => { 
+				console.log("PONNG ", bus.testArr);
+				console.log("PONNG ", bus.currentAudioPlaying);
+			});
+
+
+		},
+
+		methods: {
+
+			onTimeUpdate( event ) {
+					
+					if(this.audioInfos.timedActions){
+
+						this.audioInfos.timedActions.forEach( actionInfos => {
+
+						if ( this.alreadySent.indexOf(actionInfos.id) === -1) {
+
+							this.compareTimeCodes(event.target.currentTime, actionInfos.at, actionInfos);
+
+						}
+
+					});
+				
+				}
+			},
+
+			testHandler(){
+
+				bus.testArr = ["fock"];
+
+				bus.currentAudioPlaying = this.$el.querySelector("audio");
+				// new emit
+				bus.$emit("an-action-is-sent", "coucou");
+
+			},
+
+				
+
+			compareTimeCodes(currentTimeVideo, timeCodeToTrigger, action) {
+				
+					
+				// console.log('ALL ACTIONS  : ',action);
+
+					if(action.type){
+
+						if ( currentTimeVideo >= timeCodeToTrigger ) {
+
+						console.log("weh on emit l'action");
+					
+				
+						//  old emit
+						// this.$emit("an-action-is-sent", action);
+
+						bus.testArr = ["fock"];
+						// new emit
+						bus.$emit("an-action-is-sent", "coucou");
+
+				
+
+						this.alreadySent.push(action.id);
+						
+					}
+
+				
+				}
+			}
+
 		}
-    },
-
-	beforeUpdate() {
-
-	},
-
-	mounted() {
-        this.audioBox()
-        // this.$els.audio.play();
-        // this.audio permet d'attraper les infos envoyées du AudioManager,
-        // il va falloir coder la logique du componentAudio avec ces informations là.
-        // this.audioInfosObject.id
-        // this.audioInfosObject.audioStartTimeCode
-        // this.audioInfosObject.autoPlay
-        // this.audioInfosObject.fadeInStart
-        // this.audioInfosObject.fadeInStop
-        // this.audioInfosObject.url
-
-    },
-  
-
-	methods: {
-
-        playSound() {
-                // console.log('playsouunnd');
-        },
-
-        audioBox: function() {
-            console.log('AUDIOBOX : ',this.$refs);
-        },
-
-        onTimeUpdate( event ) {
-            // console.log(event.currentTarget.currentTime);
-
-
-            // this.compareTimeCodes();
-            // this.checkSounds();
-
-        },
-
-
-
-
-    },
-
-
-    // checkSounds() {
-    
-	// 		// si cette scene a des sounds
-	// 		if (this.sounds) {
-
-	// 			// on itère
-	// 			this.sounds.forEach( oneSound => {
+	}
 	
-	// 				// dès qu'un calltoaction doit être déclenché
-	// 				if( this.currentTime >= this.sounds.audioStartTimeCode ) {
-
-	
-	// 						// on play la video
-	// 						this.$el.play();
-
-	
-	// 						// on met le sound dans le store.actualSounds[]
-	// 						this.$store.commit('setAudioToManager', oneSound);
-	
-	
-    //                     }
-							
-                        
-	// 				}
-	// 			);
-
-	// 		}
-		
-	// 	},
-
-
-    
 
 
 
-}
-    
 
-
-    
 </script>
+
+
+<!-- ° ° ° ° ° ° ° ° ° S T Y L E ° ° ° ° ° ° ° ° ° -->
+<!-- ° ° ° ° ° ° ° ° ° S T Y L E ° ° ° ° ° ° ° ° ° -->
+
+<style scoped lang="scss">
+
+	.video-player {
+
+		width: 100%;
+
+		// de base, le player n'est pas interactif
+		pointer-events: none;
+		border: solid 15px red;
+
+
+		transition:
+			border .7s,
+			width .7s;
+
+		&.cohabitationCta {
+			width: 80%;
+			margin-right: 50px;
+		}
+
+		&.isInteractive {
+			pointer-events: initial;
+			border: solid 15px green;
+		}
+
+	}
+
+</style>

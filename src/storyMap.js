@@ -24,10 +24,7 @@ export default {
                         type: "choice"
                     },
 
-                ],
-
-
-          
+                ],          
         },
         
         intro2: {
@@ -60,7 +57,7 @@ export default {
 
             self: { 
 
-                url: "weed_start.mp4",
+                url: "weed_start.mp3",
                 controls: true,
                 options: {
 

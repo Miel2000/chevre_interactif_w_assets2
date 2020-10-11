@@ -3,8 +3,8 @@
 
         <div class="video_and_cta">
 
-            <ComponentVideo 
-                :video-infos="videoInfos" 
+            <ComponentAudio 
+                :audio-infos="audioInfos"
             />
 
             <ComponentCallToAction/>
@@ -30,7 +30,7 @@
             <div v-for="audio in computedAudios"
                 :key="audio.id">
 
-                <ComponentAudio @an-action-is-sent="computedAudios"  :audio-infos="audio" /> 
+                <!-- <ComponentAudio @an-action-is-sent="computedAudios"  :audio-infos="audio" />  -->
             </div>
         </div>
 
@@ -44,8 +44,8 @@
 
     import { bus } from '@/main'
  
-    import ComponentVideo from '@/components/ComponentVideo';
     import ComponentAudio from '@/components/ComponentAudio';
+    // import ComponentAudio from '@/components/ComponentAudio';
     import ComponentCallToAction from '@/components/ComponentCallToAction';
     import ComponentOneChoice from '@/components/ComponentOneChoice';
 
@@ -55,14 +55,14 @@
 	export default {
 
 		components: {
-            ComponentVideo,
+            ComponentAudio,
             ComponentCallToAction,
             ComponentOneChoice,
-            ComponentAudio
+            // ComponentAudio
         },
 
         props: {
-            videoId: {
+            audioId: {
                 type: String,
                 default: "weed"
             }
@@ -70,7 +70,7 @@
         
         data() {
             return {
-                videoInfos: storyMap.videos[this.videoId],
+                audioInfos: storyMap.videos[this.audioId],
                 choices: [],
                 audios: [],
             }
@@ -104,6 +104,9 @@
             actionHandler(actionInfos){
 
                 console.log("le looooggg : ", actionInfos);
+                console.log("le looooggg du bus: ", bus.testArr);
+                bus.testArr.push("ponnnnnggg");
+                bus.$emit("say-pong", "wesh");
 
                 // console.log("hey, je suis le parent, et jai recu un event choice avec : ", actionInfos);
             
@@ -127,7 +130,7 @@
 
             choiceActedHandler(choice) {
 
-                this.videoInfos = storyMap.videos[choice];
+                this.audioInfos = storyMap.videos[choice];
 
             }
 
