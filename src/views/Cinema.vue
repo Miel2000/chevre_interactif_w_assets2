@@ -5,7 +5,6 @@
 
             <ComponentVideo 
                 :video-infos="videoInfos" 
-                @an-action-is-sent="actionHandler"
             />
 
             <ComponentCallToAction/>
@@ -42,6 +41,8 @@
 <!-- ° ° ° ° ° ° ° ° ° L O G I C ° ° ° ° ° ° ° ° ° -->
 <!-- ° ° ° ° ° ° ° ° ° L O G I C ° ° ° ° ° ° ° ° ° -->
 <script>
+
+    import { bus } from '@/main'
  
     import ComponentVideo from '@/components/ComponentVideo';
     import ComponentAudio from '@/components/ComponentAudio';
@@ -88,11 +89,21 @@
 
         mounted() {
             // 
+            console.log("cinema mounted");
+            console.log("cinema mounted");
+            console.log("cinema mounted");
+            console.log("cinema mounted");
+            console.log("cinema mounted");
+
+            // new emit 
+            bus.$on("an-action-is-sent", this.actionHandler);  
         },
 
         methods: {
 
             actionHandler(actionInfos){
+
+                console.log("le looooggg : ", actionInfos);
 
                 // console.log("hey, je suis le parent, et jai recu un event choice avec : ", actionInfos);
             

@@ -35,7 +35,6 @@ import { pageOptions, pageEnter, pageLeave } from "@/PagesMethods.js";
 // import layoutMethods from '@/LayoutMethods.js';
 
 export default {
-
   methods: {
     pageEnter,
     pageLeave

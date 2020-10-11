@@ -4,10 +4,13 @@ import router from './router'
 import store from './store'
 
 Vue.config.productionTip = false
+export const bus = new Vue();
 
-let vm = new Vue({
+
+new Vue({
 	router,
 	store,
+	bus,
 	render: h => h(App)
 }).$mount('#app');
 

@@ -10,20 +10,30 @@
 
 <template>
 
-	<video 
-		class="video-player"
-		:class="{ 
-			cohabitationCta: this.$store.state.actualCallToActions.length !== 0,
-			isInteractive: this.$store.state.playerIsInteractive
-		}"
-		:src="'/assets/videos/' + videoInfos.self.url"
-		controls 
-		autoplay
-		playsinline
-		@timeupdate="onTimeUpdate" 
+	<div>
 
-	>
-	</video>
+		<video 
+			class="video-player"
+			:class="{ 
+				cohabitationCta: this.$store.state.actualCallToActions.length !== 0,
+				isInteractive: this.$store.state.playerIsInteractive
+			}"
+			:src="'/assets/videos/' + videoInfos.self.url"
+			controls 
+			autoplay
+			playsinline
+			@timeupdate="onTimeUpdate" 
+		>
+		</video>
+
+		<button
+			@click="testHandler"
+		>
+			heyhey
+		</button>
+
+	</div>
+
 
 </template>
 
@@ -31,77 +41,87 @@
 <!-- ° ° ° ° ° ° ° ° ° L O G I C ° ° ° ° ° ° ° ° ° -->
 
 <script>
+	import { bus } from '@/main'
 
-export default {
-
-	props: {
-		videoInfos: {
-			type: Object,
-			required: true
-		}
-	},
-
-	data() {
-		return {
-		}
-	},
-
-	mounted() {
-
-		this.isPaused = false;
-
-		this.alreadySent = [];
-
-	},
-
-	methods: {
-
-	onTimeUpdate( event ) {
-
-			if(this.videoInfos.timedActions){
-
-				this.videoInfos.timedActions.forEach( actionInfos => {
-
-				if ( this.alreadySent.indexOf(actionInfos.id) === -1) {
-
-					this.compareTimeCodes(event.target.currentTime, actionInfos.at, actionInfos);
-
-				}
-
-			});
-
-		
+	export default {
 
 
-		
-		}},
+		props: {
+			videoInfos: {
+				type: Object,
+				required: true
+			}
+		},
 
-		
+		data() {
+			return {};
+		},
 
-	compareTimeCodes(currentTimeVideo, timeCodeToTrigger, action) {
-		
-			
-		// console.log('ALL ACTIONS  : ',action);
+		mounted() {
 
-			if(action.type){
+			this.isPaused = false;
 
-				if ( currentTimeVideo >= timeCodeToTrigger ) {
+			this.alreadySent = [];
 
-				console.log("weh on emit l'action");
-			
-		
-				this.$emit("an-action-is-sent", action);
-		
 
-				this.alreadySent.push(action.id);
+		},
+
+		methods: {
+
+			onTimeUpdate( event ) {
+					
+					if(this.videoInfos.timedActions){
+
+						this.videoInfos.timedActions.forEach( actionInfos => {
+
+						if ( this.alreadySent.indexOf(actionInfos.id) === -1) {
+
+							this.compareTimeCodes(event.target.currentTime, actionInfos.at, actionInfos);
+
+						}
+
+					});
 				
+				}
+			},
+
+			testHandler(){
+
+				
+
+			},
+
+				
+
+			compareTimeCodes(currentTimeVideo, timeCodeToTrigger, action) {
+				
+					
+				// console.log('ALL ACTIONS  : ',action);
+
+					if(action.type){
+
+						if ( currentTimeVideo >= timeCodeToTrigger ) {
+
+						console.log("weh on emit l'action");
+					
+				
+						//  old emit
+						// this.$emit("an-action-is-sent", action);
+
+						// new emit
+						bus.$emit("an-action-is-sent", "coucou");
+				
+
+						this.alreadySent.push(action.id);
+						
+					}
+
+				
+				}
 			}
 
-		
 		}
 	}
-}
-}
 	
 
 
